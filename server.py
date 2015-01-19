@@ -66,7 +66,7 @@ class MyWebServer(SocketServer.BaseRequestHandler):
                 #Unsecure access attempted, send back 404 error
                 self.request.sendall("HTTP/1.1 404 Not Found\r\n\r\n" + "404 Error :( No page here buddy")
         else:
-            self.request.sendall("HTTP/1.1 404 Not Found\r\n\r\n" + "404 Error :( No page here buddy")
+            self.request.sendall("HTTP/1.1 501 Not Implemented\r\n\r\n" + "501 Not implemented")
 
 
 
