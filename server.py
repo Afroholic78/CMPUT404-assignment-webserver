@@ -60,8 +60,15 @@ class MyWebServer(SocketServer.BaseRequestHandler):
                     content = "HTTP/1.1 200 OK" + "\r\n" + "Content-Type: text/" + extension + "\r\n\r\n" + f.read()
                     self.request.sendall(content)
                 except IOError:
-                    #Construct the 404 content since if it reaches this point then we haven't found the file
-                    self.request.sendall("HTTP/1.1 404 Not Found\r\n\r\n" + "404 Error :( No page here buddy")
+                    try:
+                        f = open(path + "/index.html", 'r')
+                        #Strip the www off the path for the redirect
+                        new_path = path.split("www/")[1]
+                        #Construct the content before sending it back, at this point it must be a redirect
+                        self.request.sendall("HTTP/1.1 301 Moved Permanently\r\n" + "Location:" + new_path + "/\r\n" )
+                    except IOError:
+                        #Construct the 404 content since if it reaches this point then we haven't found the file
+                        self.request.sendall("HTTP/1.1 404 Not Found\r\n\r\n" + "404 Error :( No page here buddy")
             else:
                 #Unsecure access attempted, send back 404 error
                 self.request.sendall("HTTP/1.1 404 Not Found\r\n\r\n" + "404 Error :( No page here buddy")
